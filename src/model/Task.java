@@ -1,16 +1,24 @@
-package task.pack;
+package model;
 
 public class Task {
-    private int id;
+    protected int id;
     protected String name;
     protected Status status;
     protected String description;
+    private static int count = 0;
+
 
     public Task(String name, String description) {
         this.name = name;
         this.description = description;
         this.status = Status.NEW;
-        id = this.hashCode();
+        this.id = generateId();
+    }
+    public Task(String name, String description, Status status) { //конструктор для обновления данных
+        this.name = name;
+        this.description = description;
+        this.status = status;
+        this.id = generateId();
     }
 
     public String getName() {
@@ -50,4 +58,30 @@ public class Task {
         return hash;
     }
 
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+    Integer generateId() { return ++count; }
+
+    @Override
+    public String toString() {
+        return "Task{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", status=" + status +
+                ", description='" + description + '\'' +
+                '}';
+    }
 }

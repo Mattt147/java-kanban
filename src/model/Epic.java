@@ -1,47 +1,37 @@
-package task.pack;
+package model;
 
 
 import java.util.ArrayList;
+import java.util.HashMap;
+
 public class Epic extends Task {
-    private ArrayList<SubTask> subTasks;
+    private HashMap<Integer, SubTask> subTasks;
     public Epic (String name, String description) {
         super(name, description);
-        subTasks = new ArrayList<>();
+        subTasks = new HashMap<>();
     }
     void addSubTasks(SubTask tsk) {
-        subTasks.add(tsk);
+        subTasks.put(tsk.getId(), tsk);
     }
 
-    public ArrayList<SubTask> getSubTasks() {
+    public HashMap<Integer,SubTask> getSubTasks() {
         return subTasks;
     }
-    void checkStatus() {
-        int counterNew =0 ;
-        int counterDone = 0;
-        for (SubTask tsk : subTasks ) {
-            if ( tsk.getStatus() == Status.NEW ) {
-                counterNew++;
-                if (counterDone!=0) {
-                    super.status = Status.IN_PROGRESS;
-                    return;
-                }
-            }
-            if (tsk.getStatus() == Status.DONE ){
-                counterDone++;
-                if (counterNew!=0) {
-                    super.status= Status.IN_PROGRESS;
-                    return;
-                }
-            }
-            if (tsk.getStatus() == Status.IN_PROGRESS) {
-                super.status = Status.IN_PROGRESS;
-                return;
-            }
+
+    @Override
+    public String toString() {
+        String reslt = "Epic{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", status=" + status +
+                ", description='" + description + '\'' +
+                "subTasks=[ "
+                ;
+        for (SubTask sbtsk: subTasks.values()) {
+            reslt += sbtsk.getName() + " ";
         }
-        if (counterDone != 0) {
-            super.status= Status.DONE;
-        }
+        reslt += "] }";
+        return reslt;
+
     }
-
-
 }

@@ -1,4 +1,4 @@
-package managera;
+package managers;
 
 import model.Epic;
 import model.Status;
@@ -23,9 +23,12 @@ public class TaskManager {
             result  =result + tsk.getName() + "\n" ;
         }
         for (Epic epic : epics.values()) {
-            ArrayList<SubTask> sbTsk = epic.getSubTasks();
-            result += epic.getName() +" " + sbTsk.toString();
-            result +="\n";
+            HashMap<Integer, SubTask> sbtsks = epic.getSubTasks();
+            result += epic.getName() +" [ " ;
+            for (SubTask sb: sbtsks.values()) {
+                result += sb.getName() + " ";
+            }
+            result +="]\n";
         }
         return result;
     }
@@ -90,23 +93,36 @@ public class TaskManager {
             tasks.remove(id);
         }
         if (epics.containsKey(id)) {
+            Epic epc = epics.get(id);
+            HashMap<Integer, SubTask> sbtsks = epc.getSubTasks();
+
+            for ( SubTask sbtsk : sbtsks.values()) {
+                int id1 = sbtsk.getId();
+                subTasks.remove(id1);
+            }
+
             epics.remove(id);
         }
         if (subTasks.containsKey(id)) {
+            SubTask sbtsk = subTasks.get(id);
+            Epic epc = sbtsk.getEpic();
+            HashMap<Integer, SubTask> sbtsks = epc.getSubTasks();
+            sbtsks.remove(id);
+            checkStatus(epc);
             subTasks.remove(id);
         }
     }
     public String getListSbTask (Epic epic) {
         String result ;
-        ArrayList<SubTask> sbTasks = epic.getSubTasks();
+        HashMap<Integer,SubTask> sbTasks = epic.getSubTasks();
         result = sbTasks.toString();
         return result;
     }
     private void checkStatus(Epic epic) {
         int counterNew =0 ;
         int counterDone = 0;
-        ArrayList<SubTask> sbTasks= epic.getSubTasks();
-        for (SubTask tsk : sbTasks ) {
+        HashMap<Integer, SubTask> sbTasks= epic.getSubTasks();
+        for (SubTask tsk : sbTasks.values() ) {
             if ( tsk.getStatus() == Status.NEW ) {
                 counterNew++;
                 if (counterDone!=0) {
@@ -125,10 +141,12 @@ public class TaskManager {
                 epic.setStatus( Status.IN_PROGRESS);
                 return;
             }
+
         }
         if (counterDone != 0) {
             epic.setStatus( Status.DONE);
         }
+        if (sbTasks.isEmpty()) {epic.setStatus(Status.NEW);}
     }
 
 
