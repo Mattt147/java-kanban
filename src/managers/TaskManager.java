@@ -1,8 +1,9 @@
-package task.pack;
+package managera;
 
-import task.pack.Epic;
-import task.pack.SubTask;
-import task.pack.Task;
+import model.Epic;
+import model.Status;
+import model.SubTask;
+import model.Task;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -52,6 +53,8 @@ public class TaskManager {
         }
         if (obj.getClass() == SubTask.class) {
             SubTask sbTsk = (SubTask) obj;
+            Epic epic = sbTsk.getEpic();
+            checkStatus(epic);
             subTasks.put(sbTsk.getId(), sbTsk);
         }
     }
@@ -64,22 +67,22 @@ public class TaskManager {
     public void updateTask(int id, Task task) {
         if (epics.containsKey(id)) {
             Epic epic = epics.get(id) ;
-            epic.description = task.description;
-            epic.name = task.name;
+            epic.setDescription( task.getDescription());
+            epic.setName( task.getName());
         }
         if (tasks.containsKey(id)) {
             Task tsk = tasks.get(id);
-            tsk.description = task.description;
-            tsk.name = task.name;
-            tsk.prog = task.prog;
+            tsk.setDescription( task.getDescription());
+            tsk.setName( task.getName());
+            tsk.setStatus( task.getStatus());
         }
         if (subTasks.containsKey(id)) {
             SubTask sbTsk = subTasks.get(id);
-            sbTsk.description = task.description;
-            sbTsk.name = task.name;
-            sbTsk.prog = task.prog;
+            sbTsk.setDescription( task.getDescription());
+            sbTsk.setName( task.getName());
+            sbTsk.setStatus( task.getStatus());
             Epic epic = sbTsk.getEpic();
-            epic.checkProg();
+            checkStatus(epic);
         }
     }
     public void delTaskById(int id) {
@@ -98,6 +101,34 @@ public class TaskManager {
         ArrayList<SubTask> sbTasks = epic.getSubTasks();
         result = sbTasks.toString();
         return result;
+    }
+    private void checkStatus(Epic epic) {
+        int counterNew =0 ;
+        int counterDone = 0;
+        ArrayList<SubTask> sbTasks= epic.getSubTasks();
+        for (SubTask tsk : sbTasks ) {
+            if ( tsk.getStatus() == Status.NEW ) {
+                counterNew++;
+                if (counterDone!=0) {
+                    epic.setStatus( Status.IN_PROGRESS);
+                    return;
+                }
+            }
+            if (tsk.getStatus() == Status.DONE ){
+                counterDone++;
+                if (counterNew!=0) {
+                    epic.setStatus( Status.IN_PROGRESS);
+                    return;
+                }
+            }
+            if (tsk.getStatus() == Status.IN_PROGRESS) {
+                epic.setStatus( Status.IN_PROGRESS);
+                return;
+            }
+        }
+        if (counterDone != 0) {
+            epic.setStatus( Status.DONE);
+        }
     }
 
 
