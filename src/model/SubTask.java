@@ -1,5 +1,7 @@
 package model;
 
+import java.util.Objects;
+
 public class SubTask extends Task {
     private Epic epic ;
     public SubTask (Epic epic, String name, String description) {
@@ -30,5 +32,18 @@ public class SubTask extends Task {
                 '}';
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        SubTask subTask = (SubTask) o;
+        return Objects.equals(epic, subTask.epic);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), epic);
+    }
 }
 
