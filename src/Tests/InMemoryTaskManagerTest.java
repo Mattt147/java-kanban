@@ -15,25 +15,58 @@ public class InMemoryTaskManagerTest {
         manager = new InMemoryTaskManager();
     }
     @Test
-    void coreMethodsChek() {
+    void createTask() {
         Task tsk = new Task("Переезд", "Собрать все вещи, покинуть старую квартиру");
         manager.createTask(tsk);
-        tsk = new Task("Дз","Сделать до вечера два предмета");
-        manager.createTask(tsk);
+        Assertions.assertEquals(1,manager.getTasks().size(),"Таски не добавлись в список в менеджэре");
+        manager.delAllTasks();
         Epic epic = new Epic("Проект","Сделать проект по прог");
         manager.createTask(epic);
-        SubTask sbtsk = new SubTask(epic,"Отчет", "Сделать отчет по проекту");
-        manager.createTask(sbtsk);
-        sbtsk = new SubTask(epic,"Код", "Написать код по проекту");
-        manager.createTask(sbtsk);
-        Assertions.assertNotNull(manager.getEpics(),"Эпики не добавлись в список в менеджэре");
-        Assertions.assertNotNull(manager.getTasks(),"Таски не добавлись в список в менеджэре");
-        Assertions.assertNotNull(manager.getSubTasks(),"Субтаски не добавлись в список в менеджэре");
-        Assertions.assertNotNull(manager.getTaskById(tsk.getId()),"Объект не выозвращается методом поиском по id");
+        Assertions.assertEquals(0,manager.getTasks().size(),"Эпики вложилсь с ловарь тасков");
     }
-    //@Test
-    //void conflictGeneratingIdWithSetId() { конфликкт заданного id с с генерируемым
-    //В моем коде так как метод статистический для присвавивания id(также он приватный) то айди вообще никогда не задается
-    // а только присваивается.
-    //}
+    @Test
+    void createEpic() {
+        Epic tsk = new Epic("Переезд", "Собрать все вещи, покинуть старую квартиру");
+        manager.createTask(tsk);
+        Assertions.assertEquals(1,manager.getEpics().size(),"епик не добавлс в список в менеджэре");
+        manager.delAllTasks();
+        SubTask sbtsk= new SubTask(tsk,"Проект","Сделать проект по прог");
+        manager.createTask(sbtsk);
+        Assertions.assertEquals(0,manager.getEpics().size(),"субтаски вложилсь в словарь эпиков");
+    }
+    @Test
+    void createSubTask() {
+        Epic tsk = new Epic("Переезд", "Собрать все вещи, покинуть старую квартиру");
+        manager.createTask(tsk);
+        SubTask sbtsk= new SubTask(tsk,"Проект","Сделать проект по прог");
+        manager.createTask(sbtsk);
+        Assertions.assertEquals(1,manager.getSubTasks().size(),"субтаск не попал в словарь субтасков ");
+        Task task = new Task("Дз","Сделать до вечера два предмета");
+        manager.delAllTasks();
+        manager.createTask(task);
+        Assertions.assertEquals(0,manager.getSubTasks().size(),"таск  попал в словарь субтасков ");
+    }
+    @Test
+    void getByIdTask() {
+        Task tsk = new Task("Переезд", "Собрать все вещи, покинуть старую квартиру");
+        manager.createTask(tsk);
+        Assertions.assertNotNull(manager.getTaskById(tsk.getId()), "Задача не вернулсаь по id");
+        Assertions.assertNull(manager.getTaskById(tsk.getId()+1),"задача с несуществующим id вернулась ");
+    }
+    @Test
+    void getByIdEpic() {
+        Epic epic = new Epic("Переезд", "Собрать все вещи, покинуть старую квартиру");
+        manager.createTask(epic);
+        Assertions.assertNotNull(manager.getTaskById(epic.getId()), "epic не вернулсаь по id");
+        Assertions.assertNull(manager.getTaskById(epic.getId()+1),"epicс несуществующим id вернулась ");
+    }
+    @Test
+    void getByIdSubTask() {
+        Epic epic = new Epic("Переезд", "Собрать все вещи, покинуть старую квартиру");
+        manager.createTask(epic);
+        SubTask tsk = new SubTask(epic, "УБорка", "Убраться перед отъездом");
+        manager.createTask(tsk);
+        Assertions.assertNotNull(manager.getTaskById(tsk.getId()), "subTask не вернулсаь по id");
+        Assertions.assertNull(manager.getTaskById(tsk.getId()+1),"subTask с несуществующим id вернулась ");
+    }
 }

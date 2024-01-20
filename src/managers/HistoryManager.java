@@ -2,9 +2,9 @@ package managers;
 
 import model.Task;
 
-import java.util.ArrayList;
+import java.util.List;
 
 interface HistoryManager {
-    ArrayList<Task> getHistory();
+    List<Task> getHistory();
     void add(Task task);
 }

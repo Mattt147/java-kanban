@@ -9,7 +9,7 @@ import java.util.HashMap;
 
 public class InMemoryHistoryManager implements HistoryManager{
     private ArrayList<Task> tasksHistory;
-    InMemoryHistoryManager() {
+    public InMemoryHistoryManager() {
         tasksHistory = new ArrayList<>();
     }
     @Override

@@ -73,7 +73,7 @@ public class Task {
     public void setName(String name) {
         this.name = name;
     }
-    private static Integer generateId() { return ++count; }
+    private static   Integer generateId() { return ++count; }
 
     @Override
     public String toString() {

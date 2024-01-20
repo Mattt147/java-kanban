@@ -5,20 +5,18 @@ import model.Status;
 import model.SubTask;
 import model.Task;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.HashMap;
 public class InMemoryTaskManager implements TaskManager {
-    Managers managers ;
-    private HashMap<Integer, Task> tasks ;
-    private HashMap<Integer, Epic> epics ;
-    private HashMap<Integer, SubTask> subTasks ;
-    private HistoryManager history ;
+    private final HashMap<Integer, Task> tasks ;
+    private final HashMap<Integer, Epic> epics ;
+    private final HashMap<Integer, SubTask> subTasks ;
+    private final HistoryManager history ;
     public InMemoryTaskManager() {
-        managers = new Managers();
         tasks = new HashMap<>();
         epics = new HashMap<>();
         subTasks = new HashMap<>();
-        history = managers.getDefaultHistory();
+        history = Managers.getDefaultHistory();
     }
     @Override
     public String getListTasks() {
@@ -161,18 +159,19 @@ public class InMemoryTaskManager implements TaskManager {
         }
         if (sbTasks.isEmpty()) {epic.setStatus(Status.NEW);}
     }
-    public ArrayList<Task> getHistory() {
+    @Override
+    public List<Task> getHistory() {
         return history.getHistory();
     }
-
+    @Override
     public HashMap<Integer, Task> getTasks() {
         return tasks;
     }
-
+    @Override
     public HashMap<Integer, Epic> getEpics() {
         return epics;
     }
-
+    @Override
     public HashMap<Integer, SubTask> getSubTasks() {
         return subTasks;
     }
